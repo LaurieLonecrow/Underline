@@ -8,14 +8,18 @@ var _ = {};
 // If n is not provided it returns an array with just the first element.
 _.first = function (array, n) {
   let arr = [];
+  // let keys = Object.keys(array);
   if (Array.isArray(array)) {
-    if (n == n) {
-      return array.slice(0,n);
-    } else if (n !== n || n < 0 || n == 0) {
-      return array.slice(0,1);
+    if (n < array.length) {
+      for (let i = 0; i < n; i++) {
+        arr.push(array[i]);}
+    } else if (n > array.length) {
+      for (let i = 0; i < array.length; i++) {
+        arr.push(array[i]);}
+    } else if (Number.isNaN(n) || n < 0 || n == 0) {
+      arr.push(array[0]);
     }
-  } else return arr;
-
+  } return arr;
 };
 
 // _.last(array, [n])
@@ -30,7 +34,7 @@ _.last = function (array, n) {
     }
     if (n == n) {
       return array.slice(last);}
-    else if (last !== last || last < 0 || last == 0) {
+    else if (Number.isNaN(n) || n == 0) {
       return arr.push(array[array.length-1]);
     }
   } else return arr;
@@ -56,7 +60,9 @@ _.uniq = function (array) {
 // Copies all the own enumerable properties in the source object over
 // to the destination object, and returns it (without using `Object.assign`).
 _.extend = function (destination, source) {
-
+  let newDestination = destination;
+  destination = {...source};
+  return newDestination;
 };
 
 // _.defaults(destination, source)
