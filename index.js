@@ -16,7 +16,7 @@ _.first = function (array, n) {
     } else if (n > array.length) {
       for (let i = 0; i < array.length; i++) {
         arr.push(array[i]);}
-    } else if (Number.isNaN(n) || n < 0 || n == 0) {
+    } else if (isNaN(n) || n <= 0) {
       arr.push(array[0]);
     }
   } return arr;
@@ -60,9 +60,9 @@ _.uniq = function (array) {
 // Copies all the own enumerable properties in the source object over
 // to the destination object, and returns it (without using `Object.assign`).
 _.extend = function (destination, source) {
-  let newDestination = destination;
-  destination = {...source};
-  return newDestination;
+  for (let key in source) {
+    destination[key] = source[key];}
+  return destination;
 };
 
 // _.defaults(destination, source)
@@ -70,7 +70,12 @@ _.extend = function (destination, source) {
 // with own enumerable properties present in the source object,
 // and returns the destination object.
 _.defaults = function (destination, source) {
-
+  for (let prop in source) {
+    if (destination[prop] === undefined) {
+      destination[prop] = source[prop];}
+  }
+  console.log(destination);
+  return destination;
 };
 
 // COLLECTIONS
