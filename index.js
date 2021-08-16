@@ -7,19 +7,18 @@ var _ = {};
 // Returns an array with the first n elements of an array.
 // If n is not provided it returns an array with just the first element.
 _.first = function (array, n) {
+  console.log(array,n);
   let arr = [];
-  // let keys = Object.keys(array);
   if (Array.isArray(array)) {
     if (n < array.length) {
-      for (let i = 0; i < n; i++) {
-        arr.push(array[i]);}
+      return array.slice(0,n);
     } else if (n > array.length) {
-      for (let i = 0; i < array.length; i++) {
-        arr.push(array[i]);}
+      return array.slice(0);
     } else if (isNaN(n) || n <= 0) {
-      arr.push(array[0]);
+      return array.slice(0,1);
     }
-  } return arr;
+  } 
+  return arr;
 };
 
 // _.last(array, [n])
@@ -74,7 +73,6 @@ _.defaults = function (destination, source) {
     if (destination[prop] === undefined) {
       destination[prop] = source[prop];}
   }
-  console.log(destination);
   return destination;
 };
 
@@ -86,7 +84,21 @@ _.defaults = function (destination, source) {
 // (element, index|key, collection), and bound to the context if one is passed.
 // Returns the collection for chaining.
 _.each = function (collection, iteratee, context) {
-
+  let answer = [];
+  if(Object.prototype.toString.call(collection) == '[object Object]') {
+  for (let element in collection) {
+      element.function (element, key, collection) {
+        answer.push(collection[key])
+      }
+  }
+  } else {
+    for (let i = 0; i < collection.length; i++){
+      collection[i].function (element, index, collection) {
+        
+        answer.push(collection[index])
+      }
+    }
+  } return answer;
 };
 
 // _.contains(collection, value)
