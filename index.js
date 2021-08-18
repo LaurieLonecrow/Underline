@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 
 var _ = {};
 
@@ -7,17 +8,17 @@ var _ = {};
 // Returns an array with the first n elements of an array.
 // If n is not provided it returns an array with just the first element.
 _.first = function (array, n) {
+  let args = [...arguments];
   let arr = [];
   if (Array.isArray(array)) {
-    if (n < array.length) {
-      return array.slice(0,n);
+    if (n == undefined || n == null || n <= 0) {
+      arr = array.slice(0,1);
+    } else if (n < array.length) {
+      arr = array.slice(0,n);
     } else if (n > array.length) {
-      return array.slice(0);
-    } else if (isNaN(n) || n <= 0) {
-      return array.slice(0,1);
+      arr = array.slice(0);
     } 
-  } 
-  return arr;
+  } return arr;
 };
 
 // _.last(array, [n])
@@ -30,12 +31,12 @@ _.last = function (array, n) {
     if ( last < 0) {
       last = 0;
     }
-    if (n == n) {
-      return array.slice(last);}
-    else if (Number.isNaN(n) || n == 0) {
-      return arr.push(array[array.length-1]);
+    if (n == undefined || n == null || n <= 0) {
+      arr = array.slice(array.length - 1);
+    } else if (n == n) {
+      arr = array.slice(last);
     }
-  } else return arr;
+  } return arr;
 };
 
 // _.uniq(array)
