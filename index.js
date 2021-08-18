@@ -8,12 +8,14 @@ var _ = {};
 // Returns an array with the first n elements of an array.
 // If n is not provided it returns an array with just the first element.
 _.first = function (array, n) {
-  let args = [...arguments];
   let arr = [];
+  // let args = Array.from(arguments);
+  // array = args[0];
+  // console.log(args)
   if (Array.isArray(array)) {
     if (n == undefined || n == null || n <= 0) {
       arr = array.slice(0,1);
-    } else if (n < array.length) {
+    } else if (n <= array.length) {
       arr = array.slice(0,n);
     } else if (n > array.length) {
       arr = array.slice(0);
@@ -136,7 +138,6 @@ _.map = function (collection, iteratee, context) {
       }
     } 
   }
-  
   return newArray;
 };
 
