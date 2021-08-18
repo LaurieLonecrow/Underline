@@ -7,7 +7,6 @@ var _ = {};
 // Returns an array with the first n elements of an array.
 // If n is not provided it returns an array with just the first element.
 _.first = function (array, n) {
-  console.log(array,n);
   let arr = [];
   if (Array.isArray(array)) {
     if (n < array.length) {
@@ -16,7 +15,7 @@ _.first = function (array, n) {
       return array.slice(0);
     } else if (isNaN(n) || n <= 0) {
       return array.slice(0,1);
-    }
+    } 
   } 
   return arr;
 };
@@ -60,7 +59,10 @@ _.uniq = function (array) {
 // to the destination object, and returns it (without using `Object.assign`).
 _.extend = function (destination, source) {
   for (let key in source) {
-    destination[key] = source[key];}
+    if (source.hasOwnProperty(key)) {
+      destination[key] = source[key];
+    }
+  }
   return destination;
 };
 
@@ -70,9 +72,10 @@ _.extend = function (destination, source) {
 // and returns the destination object.
 _.defaults = function (destination, source) {
   for (let prop in source) {
-    if (destination[prop] === undefined) {
-      destination[prop] = source[prop];}
-  }
+    if (source.hasOwnProperty(prop)) {
+      if (destination[prop] === undefined) {
+        destination[prop] = source[prop];}
+    }}
   return destination;
 };
 
@@ -86,14 +89,16 @@ _.defaults = function (destination, source) {
 _.each = function (collection, iteratee, context) {
   if (Array.isArray(collection)) {
     for (let i = 0; i < collection.length; i++) {
-      iteratee(collection[i], i, collection);
+      iteratee.call(context, collection[i], i, collection);
     }
-  } else { 
-    for (let element in collection) {
-      iteratee(element, key, collection[key], collection); 
+  } else {
+    for (let key in collection) { 
+      if (collection.hasOwnProperty(key)) {
+        iteratee.call(context, key, collection[key], collection); 
+      }
     }
-    
-  } return collection;
+  } 
+  return collection;
 };
 
 // _.contains(collection, value)
@@ -112,7 +117,26 @@ _.contains = function (collection, value) {
 // Each invocation of iteratee is called with three arguments:
 // (element, index|key, collection), and bound to the context if one is passed.
 _.map = function (collection, iteratee, context) {
-
+  let newArray = [];
+  if (Object.prototype.toString.call(collection) == '[object Array]') {
+    for (let i = 0; i < collection.length; i++) {
+      iteratee.call(context, collection[i], i, collection); {
+        newArray.push(collection[i]);
+      }
+    } 
+  } else { 
+    if (Object.prototype.toString.call(collection) == '[object Object]') {
+      for (let key in collection) {
+        if (collection.hasOwnProperty(key)) { 
+          iteratee.call(context, key, collection[key], collection); {
+            newArray.push(collection[key]);   
+          } 
+        } 
+      }
+    } 
+  }
+  
+  return newArray;
 };
 
 // _.reduce(collection, iteratee, [accumulator], [context])
@@ -152,7 +176,7 @@ _.reject = function (collection, predicate, context) {
 // TIP: without the short-circuiting you could reuse _.reduce(). Can you figure how?
 // Because of the short-circuiting though, you need to implement it in a similar way as you did at _.each.
 _.every = function (collection, predicate, context) {
-
+  
 };
 
 // _.some(collection, [predicate], [context])
