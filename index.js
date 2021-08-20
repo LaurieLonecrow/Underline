@@ -9,16 +9,15 @@ var _ = {};
 // If n is not provided it returns an array with just the first element.
 _.first = function (array, n) {
   let arr = [];
+  if (array == undefined || array == null) return [];
   let args = Array.prototype.slice.call(arguments[0]);
   if (n == undefined || n == null || n <= 0) {
     arr = args.slice(0,1);
-  } else if (n <= array.length) {
+  } else if (n <= args.length) {
     arr = args.slice(0,n);
-  } else if (n > array.length) {
+  } else if (n > args.length) {
     arr = args.slice(0);
-  } else {
-    return arr;
-  }
+  } 
   return arr;
 };
 
@@ -27,13 +26,14 @@ _.first = function (array, n) {
 // If n is not provided it returns an array with just the last element.
 _.last = function (array, n) {
   let arr = [];
+  if (array == undefined || array == null) return [];
   let args = Array.prototype.slice.call(arguments[0]);
   let last = args.length - n;
   if ( last < 0) {
     last = 0;
   }
   if (n == undefined || n == null || n <= 0) {
-    arr = args.slice(array.length - 1);
+    arr = args.slice(args.length - 1);
   } else if (n == n) {
     arr = args.slice(last);
   }
@@ -146,22 +146,40 @@ _.map = function (collection, iteratee, context) {
 // and bound to the context if one is passed. If no accumulator is passed
 // to the initial invocation of reduce, iteratee is not invoked on the first element,
 // and the first element is instead passed as accumulator for the next invocation.
+
+
 _.reduce = function (collection, iteratee, accumulator, context) {
-  let initial;
-  accumulator === undefined || accumulator === null ?  initial : collection[0];
-  if (Array.isArray(collection)) { 
-    for (let i = initial ? 1 : 0; i < collection.length; i++) {
-      accumulator = iteratee.call(context, accumulator, collection[i], i, collection); 
-    }
-  } else {
-    for (let key in collection) {
-      if (collection.hasOwnProperty(key)) { 
-        accumulator = iteratee.call(context, accumulator, collection[key], key, collection);
-      }
-    }
+  let initial = accumulator;
+  let values = Object.values(collection);
+  console.log(values, collection, accumulator);
+
+  if (accumulator == undefined || accumulator == null) {
+    accumulator = values[0];}
+  for (let i = initial ? 0 : 1; i < values.length; i++) {
+    accumulator = iteratee.call(context, accumulator, values[i], i, collection); 
   }
   return accumulator;
 };
+
+// _.reduce = function (collection, iteratee, accumulator, context) {
+//   let initial = 0;
+//   let values = Object.values(collection);
+//   console.log(values)
+//   if (accumulator == undefined || accumulator == null) {
+//     initial = 1;
+//     accumulator = collection[0];}
+//   if (Array.isArray(collection)) { 
+//     for (let i = initial; i < collection.length; i++) {
+//       accumulator = iteratee.call(context, accumulator, collection[i], i, collection); 
+//     }
+//   } else {
+//     for (let key in collection) {
+//       if (collection.hasOwnProperty(key)) { 
+//         accumulator = iteratee.call(context, accumulator, collection[key], key, collection);}
+//     }
+//   }   
+//   return accumulator;
+// };
 
 // _.filter(collection, predicate, [context])
 // Looks through each value in the collection, returning an array of all the values
