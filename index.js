@@ -9,15 +9,17 @@ var _ = {};
 // If n is not provided it returns an array with just the first element.
 _.first = function (array, n) {
   let arr = [];
-  if (Array.isArray(array)) {
-    if (n == undefined || n == null || n <= 0) {
-      arr = array.slice(0,1);
-    } else if (n <= array.length) {
-      arr = array.slice(0,n);
-    } else if (n > array.length) {
-      arr = array.slice(0);
-    }
-  } return arr;
+  let args = Array.prototype.slice.call(arguments[0]);
+  if (n == undefined || n == null || n <= 0) {
+    arr = args.slice(0,1);
+  } else if (n <= array.length) {
+    arr = args.slice(0,n);
+  } else if (n > array.length) {
+    arr = args.slice(0);
+  } else {
+    return arr;
+  }
+  return arr;
 };
 
 // _.last(array, [n])
@@ -25,17 +27,17 @@ _.first = function (array, n) {
 // If n is not provided it returns an array with just the last element.
 _.last = function (array, n) {
   let arr = [];
-  if (Array.isArray(array)) {
-    let last = array.length - n;
-    if ( last < 0) {
-      last = 0;
-    }
-    if (n == undefined || n == null || n <= 0) {
-      arr = array.slice(array.length - 1);
-    } else if (n == n) {
-      arr = array.slice(last);
-    }
-  } return arr;
+  let args = Array.prototype.slice.call(arguments[0]);
+  let last = args.length - n;
+  if ( last < 0) {
+    last = 0;
+  }
+  if (n == undefined || n == null || n <= 0) {
+    arr = args.slice(array.length - 1);
+  } else if (n == n) {
+    arr = args.slice(last);
+  }
+  return arr;
 };
 
 // _.uniq(array)
