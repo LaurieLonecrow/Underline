@@ -9,9 +9,6 @@ var _ = {};
 // If n is not provided it returns an array with just the first element.
 _.first = function (array, n) {
   let arr = [];
-  // let args = Array.from(arguments);
-  // array = args[0];
-  // console.log(args)
   if (Array.isArray(array)) {
     if (n == undefined || n == null || n <= 0) {
       arr = array.slice(0,1);
@@ -19,7 +16,7 @@ _.first = function (array, n) {
       arr = array.slice(0,n);
     } else if (n > array.length) {
       arr = array.slice(0);
-    } 
+    }
   } return arr;
 };
 
@@ -97,7 +94,7 @@ _.each = function (collection, iteratee, context) {
   } else {
     for (let key in collection) { 
       if (collection.hasOwnProperty(key)) {
-        iteratee.call(context, key, collection[key], collection); 
+        iteratee.call(context, collection[key], key, collection); 
       }
     }
   } 
@@ -121,22 +118,20 @@ _.contains = function (collection, value) {
 // (element, index|key, collection), and bound to the context if one is passed.
 _.map = function (collection, iteratee, context) {
   let newArray = [];
-  if (Object.prototype.toString.call(collection) == '[object Array]') {
+  if (Array.isArray(collection)) {
     for (let i = 0; i < collection.length; i++) {
       iteratee.call(context, collection[i], i, collection); {
         newArray.push(collection[i]);
       }
     } 
   } else { 
-    if (Object.prototype.toString.call(collection) == '[object Object]') {
-      for (let key in collection) {
-        if (collection.hasOwnProperty(key)) { 
-          iteratee.call(context, key, collection[key], collection); {
-            newArray.push(collection[key]);   
-          } 
+    for (let key in collection) {
+      if (collection.hasOwnProperty(key)) { 
+        iteratee.call(context, collection[key], key, collection); {
+          newArray.push(collection[key]);   
         } 
-      }
-    } 
+      } 
+    }
   }
   return newArray;
 };
@@ -150,7 +145,20 @@ _.map = function (collection, iteratee, context) {
 // to the initial invocation of reduce, iteratee is not invoked on the first element,
 // and the first element is instead passed as accumulator for the next invocation.
 _.reduce = function (collection, iteratee, accumulator, context) {
-
+  let initial;
+  accumulator === undefined || accumulator === null ?  initial : collection[0];
+  if (Array.isArray(collection)) { 
+    for (let i = initial ? 1 : 0; i < collection.length; i++) {
+      accumulator = iteratee.call(context, accumulator, collection[i], i, collection); 
+    }
+  } else {
+    for (let key in collection) {
+      if (collection.hasOwnProperty(key)) { 
+        accumulator = iteratee.call(context, accumulator, collection[key], key, collection);
+      }
+    }
+  }
+  return accumulator;
 };
 
 // _.filter(collection, predicate, [context])
@@ -158,8 +166,26 @@ _.reduce = function (collection, iteratee, accumulator, context) {
 // that pass a truth test (predicate). Predicate is called with three arguments:
 // (element, index|key, collection), and bound to the context if one is passed.
 _.filter = function (collection, predicate, context) {
-
+  let truth = [];
+  if (Object.prototype.toString.call(collection) == '[object Object]') {
+    for (let key in collection) {
+      if (collection.hasOwnProperty(key)) { 
+        if (predicate.call(context, collection[key], key, collection)) {
+          truth.push(collection[key]);
+        }
+      }
+    }     
+  } else {
+    for ( var i = 0; i < collection.length; i++) {
+      if (predicate.call(context, collection[i], i, collection)) {
+        truth.push(collection[i]);
+      }
+    }
+  }
+  return truth;
 };
+
+
 
 // _.reject(collection, predicate, [context])
 // Looks through each value in the collection, returning an array of all the values
@@ -167,6 +193,23 @@ _.filter = function (collection, predicate, context) {
 // (element, index|key, collection), and bound to the context if one is passed.
 // TIP: can you reuse _.filter()?
 _.reject = function (collection, predicate, context) {
+  let notTruth = [];
+  if (Object.prototype.toString.call(collection) == '[object Object]') {
+    for (let key in collection) {
+      if (collection.hasOwnProperty(key)) { 
+        if (!predicate.call(context, collection[key], key, collection)) {
+          notTruth.push(collection[key]);
+        }
+      }
+    }     
+  } else {
+    for ( var i = 0; i < collection.length; i++) {
+      if (!predicate.call(context, collection[i], i, collection)) {
+        notTruth.push(collection[i]);
+      }
+    }
+  }
+  return notTruth;
 
 };
 
@@ -178,8 +221,28 @@ _.reject = function (collection, predicate, context) {
 // TIP: without the short-circuiting you could reuse _.reduce(). Can you figure how?
 // Because of the short-circuiting though, you need to implement it in a similar way as you did at _.each.
 _.every = function (collection, predicate, context) {
-  
+  if (Array.isArray(collection)) {
+    for (let i = 0; i < collection.length; i++) {
+      if (!predicate.call(context, collection[i], i, collection)) {
+        return false;}
+    }
+  } else {
+    for (let key in collection) { 
+      if (collection.hasOwnProperty(key)) {
+        if (!predicate.call(context, collection[key], key, collection)) {
+          return false;} 
+      }
+    }
+  } 
+  return true;
 };
+// _.every = function (collection, predicate) {
+//   _.reduce((collection, newArray, element) => {
+//     if (predicate(element) === true) {
+//       newArray.push(element);
+//     }
+//   });
+// }; 
 
 // _.some(collection, [predicate], [context])
 // Returns true if any value in the collection passes the predicate truth test.
@@ -188,7 +251,22 @@ _.every = function (collection, predicate, context) {
 // Short-circuits and stops traversing the list if a true element is found.
 // TIP: what method that you have already implemented can be reused here?
 _.some = function (collection, predicate, context) {
-
+  if (Array.isArray(collection)) {
+    for (let i = 0; i < collection.length; i++) {
+      if (predicate.call(context, collection[i], i, collection)) {
+        return true;
+      }
+    }
+  } else {
+    for (let key in collection) { 
+      if (collection.hasOwnProperty(key)) {
+        if (predicate.call(context, collection[key], key, collection)) {
+          return true;
+        } 
+      }
+    }
+  } 
+  return false;
 };
 
 // _.invoke(collection, methodName, *arguments)
@@ -196,7 +274,22 @@ _.some = function (collection, predicate, context) {
 // indicated by methodName on each value in the collection.
 // Any extra arguments passed to invoke will be forwarded on to the method invocation.
 _.invoke = function (collection, methodName) {
-
+  let array = [];  
+  let args = Array.prototype.slice.call(arguments);
+  if (Array.isArray(collection)) {
+    for (let i = 0; i < collection.length; i++) {
+      collection[methodName].call(collection[i], ...args);
+      array.push(collection[i]);
+    }
+  } else {
+    for (let key in collection) { 
+      if (collection.hasOwnProperty(key)) {
+        collection[methodName].call(collection[key], ...args);
+        array.push(collection[key]);
+      }
+    }
+  }
+  return array;
 };
 
 // _.pluck(collection, propertyName)
@@ -205,7 +298,11 @@ _.invoke = function (collection, methodName) {
 // in the collection, and returns an array with all the values
 // corresponding to the property indicated by propertyName.
 _.pluck = function (collection, propertyName) {
-
+  let newArray = [];
+  _.map(collection, function (element) {
+    newArray.push(element[propertyName]);
+  }); 
+  return newArray;
 };
 
 // FUNCTIONS
@@ -217,8 +314,17 @@ _.pluck = function (collection, propertyName) {
 // Useful for initialization functions, instead of having to set
 // a boolean flag and then check it later.
 _.once = function (func) {
-
+  let answer;
+  let value = false;
+  return function () {
+    if (!value) {
+      value = true;
+      answer = func.apply(this, arguments);
+    }
+    return answer;
+  };
 };
+
 
 // _.memoize(func)
 // Memoizes a given function by caching the computed result.
@@ -228,7 +334,17 @@ _.once = function (func) {
 // will check if it has already computed the result for the given argument
 // and return that value instead of recomputing it.
 _.memoize = function (func) {
-
+  let cache = [];
+  return function (x) {
+    if (x in cache) {
+      return cache[x];
+    } else {
+      let result = func.apply(this, arguments);
+      cache[x] = result;
+      return result;
+    }
+    
+  };
 };
 
 // _.delay(function, wait, *arguments)
@@ -236,8 +352,20 @@ _.memoize = function (func) {
 // If you pass the optional arguments, they will be forwarded
 // on to the function when it is invoked.
 _.delay = function (func, wait) {
-
+  let args = Array.prototype.slice.call(arguments,2);
+  return setTimeout(function () {
+    return func.apply(this, args);
+  }, wait);
 };
+
+// _.delay = function (func, wait) {
+//   let args = Array.prototype.slice.call(arguments,2);
+//   let time = Date.now() + wait;
+//   while (time > Date.now()) {
+//     Date.now();
+//     if (time == Date.now()) return func.apply(this, args);
+//   } 
+// };
 
 // _.throttle(function, wait)
 // Returns a new, throttled version of the passed function that,
@@ -246,7 +374,18 @@ _.delay = function (func, wait) {
 // the last computed result. Useful for rate-limiting events
 // that occur faster than you can keep up with.
 _.throttle = function (func, wait) {
-
+  let throttled = false;
+  let result; 
+  return function () {
+    if (!throttled) { 
+      result = func.apply(this, arguments); 
+      throttled = true;
+      setTimeout(function () {
+        throttled = false;
+      }, wait);
+    }
+    return result;
+  };
 };
 
 // Allow tests to run on the server (leave at the bottom)
