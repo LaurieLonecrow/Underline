@@ -275,7 +275,7 @@ _.some = function (collection, predicate, context) {
 // Any extra arguments passed to invoke will be forwarded on to the method invocation.
 _.invoke = function (collection, methodName) {
   let array = [];  
-  let args = Array.prototype.slice.call(arguments);
+  let args = Array.prototype.slice.call(arguments, 2);
   if (Array.isArray(collection)) {
     for (let i = 0; i < collection.length; i++) {
       collection[methodName].call(collection[i], ...args);
@@ -317,7 +317,7 @@ _.once = function (func) {
   let answer;
   let value = false;
   return function () {
-    if (!value) {
+    if (value == false)  {
       value = true;
       answer = func.apply(this, arguments);
     }
@@ -335,12 +335,12 @@ _.once = function (func) {
 // and return that value instead of recomputing it.
 _.memoize = function (func) {
   let cache = [];
-  return function (x) {
-    if (x in cache) {
-      return cache[x];
+  return function (arg) {
+    if (arg in cache) {
+      return cache[arg];
     } else {
       let result = func.apply(this, arguments);
-      cache[x] = result;
+      cache[arg] = result;
       return result;
     }
     
@@ -377,7 +377,7 @@ _.throttle = function (func, wait) {
   let throttled = false;
   let result; 
   return function () {
-    if (!throttled) { 
+    if (throttled == false) { 
       result = func.apply(this, arguments); 
       throttled = true;
       setTimeout(function () {
