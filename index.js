@@ -148,20 +148,31 @@ _.map = function (collection, iteratee, context) {
 // and the first element is instead passed as accumulator for the next invocation.
 
 
+// _.reduce = function (collection, iteratee, accumulator, context) {
+//   let initial = 0;
+//   let values = Object.values(collection);
+//   console.log(collection, values);
+//   if (accumulator == undefined || accumulator == null) {
+//     accumulator = values[0];
+//     initial = 1;
+//   }
+//   for (let i = initial; i < values.length; i++) {
+//     accumulator = iteratee.call(context, accumulator, values[i], i, values); 
+//   }
+//   return accumulator;
+// };
+
 _.reduce = function (collection, iteratee, accumulator, context) {
-  let initial = 0;
-  let values = Object.values(collection);
-  console.log(collection, values);
-  if (accumulator == undefined || accumulator == null) {
-    accumulator = values[0];
-    initial = 1;
-  }
-  for (let i = initial; i < values.length; i++) {
-    accumulator = iteratee.call(context, accumulator, values[i], i, values); 
-  }
+  _.each(collection, function (value, key) {
+    if (accumulator == undefined) {
+      accumulator = value;
+    } else {
+      accumulator = iteratee.call(context, accumulator, value, key, collection);
+    }
+  });
+
   return accumulator;
 };
-
 
 // _.filter(collection, predicate, [context])
 // Looks through each value in the collection, returning an array of all the values
