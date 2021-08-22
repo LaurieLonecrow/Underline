@@ -149,37 +149,19 @@ _.map = function (collection, iteratee, context) {
 
 
 _.reduce = function (collection, iteratee, accumulator, context) {
-  let initial = accumulator;
+  let initial = 0;
   let values = Object.values(collection);
-  console.log(values, collection, accumulator);
-
+  console.log(collection, values);
   if (accumulator == undefined || accumulator == null) {
-    accumulator = values[0];}
-  for (let i = initial ? 0 : 1; i < values.length; i++) {
-    accumulator = iteratee.call(context, accumulator, values[i], i, collection); 
+    accumulator = values[0];
+    initial = 1;
+  }
+  for (let i = initial; i < values.length; i++) {
+    accumulator = iteratee.call(context, accumulator, values[i], i, values); 
   }
   return accumulator;
 };
 
-// _.reduce = function (collection, iteratee, accumulator, context) {
-//   let initial = 0;
-//   let values = Object.values(collection);
-//   console.log(values)
-//   if (accumulator == undefined || accumulator == null) {
-//     initial = 1;
-//     accumulator = collection[0];}
-//   if (Array.isArray(collection)) { 
-//     for (let i = initial; i < collection.length; i++) {
-//       accumulator = iteratee.call(context, accumulator, collection[i], i, collection); 
-//     }
-//   } else {
-//     for (let key in collection) {
-//       if (collection.hasOwnProperty(key)) { 
-//         accumulator = iteratee.call(context, accumulator, collection[key], key, collection);}
-//     }
-//   }   
-//   return accumulator;
-// };
 
 // _.filter(collection, predicate, [context])
 // Looks through each value in the collection, returning an array of all the values
@@ -371,21 +353,24 @@ _.memoize = function (func) {
 // Much like setTimeout(), invokes function after waiting milliseconds.
 // If you pass the optional arguments, they will be forwarded
 // on to the function when it is invoked.
-_.delay = function (func, wait) {
-  let args = Array.prototype.slice.call(arguments,2);
-  return setTimeout(function () {
-    return func.apply(this, args);
-  }, wait);
-};
-
 // _.delay = function (func, wait) {
 //   let args = Array.prototype.slice.call(arguments,2);
-//   let time = Date.now() + wait;
-//   while (time > Date.now()) {
-//     Date.now();
-//     if (time == Date.now()) return func.apply(this, args);
-//   } 
+//   return setTimeout(function () {
+//     return func.apply(this, args);
+//   }, wait);
 // };
+
+_.delay = function (func, wait) {
+  let args = Array.prototype.slice.call(arguments,2);
+  let date = 0;
+  const now = setInterval(() => {
+    date += wait;
+    if (date === wait) {
+      return func.apply(this, args);
+    }
+  }, wait);
+};
+    
 
 // _.throttle(function, wait)
 // Returns a new, throttled version of the passed function that,
