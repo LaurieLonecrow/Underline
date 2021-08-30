@@ -374,7 +374,7 @@ _.memoize = function (func) {
 _.delay = function (func, wait) {
   let args = Array.prototype.slice.call(arguments,2);
   let date = 0;
-  const now = setInterval(() => {
+  const now = setTimeout(() => {
     date += wait;
     if (date === wait) {
       return func.apply(this, args);
