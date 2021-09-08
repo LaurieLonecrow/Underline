@@ -364,12 +364,6 @@ _.memoize = function (func) {
 // Much like setTimeout(), invokes function after waiting milliseconds.
 // If you pass the optional arguments, they will be forwarded
 // on to the function when it is invoked.
-// _.delay = function (func, wait) {
-//   let args = Array.prototype.slice.call(arguments,2);
-//   return setTimeout(function () {
-//     return func.apply(this, args);
-//   }, wait);
-// };
 
 _.delay = function (func, wait) {
   let args = Array.prototype.slice.call(arguments,2);
@@ -404,7 +398,23 @@ _.throttle = function (func, wait) {
   };
 };
 
+// _.shuffle(collection)
+// Shuffles a collection, and returns a new array.
+_.shuffle = function (collection) {
+  let newCollection = [];
+  let length = collection.length;
+  let random = 0;
+
+  while (length--) {
+    random = Math.floor(Math.random() * (length + 1));
+    newCollection.push(collection[random]);
+    collection.splice(random,1);
+  }
+  return newCollection;
+};
+
 // Allow tests to run on the server (leave at the bottom)
 if (typeof window === 'undefined') {
   module.exports = _;
 }
+

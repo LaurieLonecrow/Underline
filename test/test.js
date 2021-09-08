@@ -767,4 +767,13 @@ describe('Functions', function () {
 
   });
 
+
+
+
+  describe('shuffle', function () {
+    it('should return an array with each element at a different index', function () {
+      _.shuffle(mocks.arr).should.not.equal(_.shuffle(mocks.arr));
+    });
+
+  });
 });
